@@ -26,7 +26,7 @@ export type ModuloType = {
     nombre: string
     propiedades: PropiedadesType
     estado: string
-    subModulo: SubModuloType
+    subModulo: SubModuloType[]
 }
 
 export interface RoleType {

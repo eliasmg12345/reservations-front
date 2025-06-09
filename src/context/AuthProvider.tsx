@@ -1,5 +1,5 @@
 'use client'
-import { LoginType, UsuarioType } from "@/app/login/types/loginTypes"
+import { LoginType, RoleType, UsuarioType } from "@/app/login/types/loginTypes"
 import { Constantes } from "@/config/Constantes"
 import { Servicios } from "@/services/Servicios"
 import { imprimir } from "@/utils/imprimir"
@@ -11,6 +11,7 @@ import { createContext, ReactNode, useContext, useState } from "react"
 interface ContextProps {
     cargarUsuarioManual: () => Promise<void>
     usuario: UsuarioType | null
+    rolUsuario: RoleType | undefined
     ingresar: ({ usuario, contrasena }: LoginType) => Promise<void>
     progresoLogin: boolean
 }
@@ -57,6 +58,8 @@ export const AuthProvider = ({ children }: AuthContextType) => {
         }
     }
 
+    const rolUsuario = () => user?.roles.find((rol) => rol.idRol == user?.idRol)
+
     return (
         <AuthContext.Provider
             value={{
@@ -64,6 +67,7 @@ export const AuthProvider = ({ children }: AuthContextType) => {
                 usuario: user,
                 ingresar: login,
                 progresoLogin: loading,
+                rolUsuario:rolUsuario()
             }}
         >
             {children}

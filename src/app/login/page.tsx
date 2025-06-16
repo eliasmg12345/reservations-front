@@ -1,5 +1,5 @@
 'use client'
-import { Box, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Divider, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
 import LoginContainer from "./ui/LoginContainer";
 import { useFullScreenLoading } from "@/context/FullScreenLoadingProvider";
 import { imprimir } from "@/utils/imprimir";
@@ -43,17 +43,48 @@ export default function LoginPage() {
                             fontWeight={'500'}
                             align={sm || xs ? 'center' : 'left'}
                         >
-                            Frontend vase con Next.js, MUI v7 y Typescript
+                            Frontend con Next.js, MUI v7 y Typescript
                         </Typography>
                     </Box>
                 </Box>
             </Grid>
             <Grid
                 size={{ xl: 0, md: 0, xs: 0 }}
+                sx={{
+                    display: {
+                        sm: 'none',
+                        xs: 'none',
+                        md: 'block',
+                        xl: 'block',
+                    },
+                }}
             >
-
+                <Box
+                    display={'flex'}
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                    minHeight={'80vh'}
+                >
+                    <Divider
+                        variant={'middle'}
+                        sx={{ marginTop: '60px', marginBottom: '60px' }}
+                        orientation="vertical"
+                        flexItem
+                    />
+                </Box>
             </Grid>
-            <LoginContainer />
+            <Grid size={{ xl: 4, md: 5, xs: 12 }}>
+                <Box display="flex" justifyContent="center" alignItems="center">
+                    <Box
+                        display={'flex'}
+                        justifyContent={'space-around'}
+                        alignItems={'center'}
+                        color={'primary'}
+                    >
+                        <LoginContainer />
+                    </Box>
+                </Box>
+            </Grid>
         </Grid>
     )
 }

@@ -11,11 +11,10 @@ export default function LoginLayout({ children }: { children: ReactNode }) {
             <title>{`${siteName()}`}</title>
             <Box sx={{ display: 'flex' }}>
                 <Box component="main" sx={{ flexGrow: 1, p: 2 }}>
-                    <Toolbar>
-                        <Suspense fallback={<FullScreenLoading mensaje={'Cargando ...'} />}>
-                            {children}
-                        </Suspense>
-                    </Toolbar>
+                    <Toolbar />
+                    <Suspense fallback={<FullScreenLoading mensaje={'Cargando ...'} />}>
+                        {children}
+                    </Suspense>
                 </Box>
             </Box>
         </>

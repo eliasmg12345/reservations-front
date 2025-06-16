@@ -1,15 +1,20 @@
 'use client'
 import { LoginType, RoleType, UsuarioType } from "@/app/login/types/loginTypes"
 import { Constantes } from "@/config/Constantes"
+import { useSession } from "@/hooks/useSession"
 import { Servicios } from "@/services/Servicios"
+import { guardarCookie, leerCookie } from "@/utils/cookies"
 import { imprimir } from "@/utils/imprimir"
 import { delay, encodeBase64 } from "@/utils/utilidades"
 import { useRouter } from "next/navigation"
 import { createContext, ReactNode, useContext, useState } from "react"
+import { useFullScreenLoading } from "./FullScreenLoadingProvider"
 
 
 interface ContextProps {
     cargarUsuarioManual: () => Promise<void>
+    inicializarUsuario: () => Promise<void>
+    estaAutenticado: boolean
     usuario: UsuarioType | null
     rolUsuario: RoleType | undefined
     ingresar: ({ usuario, contrasena }: LoginType) => Promise<void>
@@ -26,13 +31,61 @@ export const AuthProvider = ({ children }: AuthContextType) => {
     const [user, setUser] = useState<UsuarioType | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
 
+    const { mostrarFullScreen, ocultarFullScreen } = useFullScreenLoading()
+
     const router = useRouter()
+
+    const { sesionPeticion, borrarCookiesSession } = useSession()
+
+    const inicializarUsuario = async () => {
+        const token = leerCookie('token')
+
+        if (!token) {
+            setLoading(false)
+            return
+        }
+
+        try {
+            setLoading(true)
+            mostrarFullScreen()
+            await obtenerUsuarioRol()
+            //todo obtener permisos
+            await delay(1000)
+        } catch (error: Error | any) {
+            imprimir('Error durante la inicializarUsuario', typeof error, error)
+            borrarSesionUsuario()
+
+            router.replace('/login')
+            throw error
+        } finally {
+            setLoading(false)
+            ocultarFullScreen()
+        }
+    }
+
+    const borrarSesionUsuario = () => {
+        setUser(null)
+        borrarCookiesSession()
+    }
 
     const cargarUsuarioManual = async () => {
         try {
+            await obtenerUsuarioRol()
+            //todo
+            //await obtenerPersmisos()
 
+            mostrarFullScreen()
+            await delay(1000)
+            router.replace('/admin/home')
         } catch (error: Error | any) {
+            imprimir('Error durante cargarUsuarioManual', error)
+            borrarSesionUsuario()
 
+            imprimir(`🚨 -> login`)
+            router.replace('/login')
+            throw error
+        } finally {
+            ocultarFullScreen()
         }
     }
 
@@ -46,16 +99,34 @@ export const AuthProvider = ({ children }: AuthContextType) => {
                 body: { usuario, contrasena: encodeBase64(encodeURI(contrasena)) },
                 headers: {},
             })
+            guardarCookie('token', respuesta.datos?.access_token)
+            imprimir(`Token ✅: ${respuesta.datos?.access_token}`)
 
             setUser(respuesta.datos)
             imprimir('Usuarios', respuesta.datos)
 
+            mostrarFullScreen()
+            await delay(1000)
             router.replace('/admin/home')
+            await delay(1000)
         } catch (e) {
             imprimir('Error al iniciar sesión: ', e)
+            borrarSesionUsuario()
         } finally {
             setLoading(false)
+            ocultarFullScreen()
         }
+    }
+
+    const obtenerUsuarioRol = async () => {
+        const respuestaUsuario = await sesionPeticion({
+            url: `${Constantes.baseUrl}/usuarios/cuenta/perfil`
+        })
+
+        setUser(respuestaUsuario.datos)
+        imprimir(
+            `Rol definido en obtenerUsuarioRol: ${respuestaUsuario.datos.idRol}`
+        )
     }
 
     const rolUsuario = () => user?.roles.find((rol) => rol.idRol == user?.idRol)
@@ -64,10 +135,12 @@ export const AuthProvider = ({ children }: AuthContextType) => {
         <AuthContext.Provider
             value={{
                 cargarUsuarioManual,
+                inicializarUsuario,
+                estaAutenticado: !!user && !loading,
                 usuario: user,
                 ingresar: login,
                 progresoLogin: loading,
-                rolUsuario:rolUsuario()
+                rolUsuario: rolUsuario()
             }}
         >
             {children}

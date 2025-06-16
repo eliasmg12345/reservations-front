@@ -4,6 +4,10 @@ import LoginContainer from "./ui/LoginContainer";
 import { useFullScreenLoading } from "@/context/FullScreenLoadingProvider";
 import { imprimir } from "@/utils/imprimir";
 import { useEffect } from "react";
+import { delay } from "@/utils/utilidades";
+import { Servicios } from "@/services/Servicios";
+import { useAlerts } from "@/hooks/useAlerts";
+import { InterpreteMensajes } from "@/utils/interpreteMensajes";
 
 
 export default function LoginPage() {
@@ -12,16 +16,28 @@ export default function LoginPage() {
     const sm = useMediaQuery(theme.breakpoints.only('sm'))
     const xs = useMediaQuery(theme.breakpoints.only('xs'))
 
+    const { Alerta } = useAlerts()
     const { mostrarFullScreen, ocultarFullScreen } = useFullScreenLoading()
 
     const obtenerEstado = async () => {
         try {
-
+            mostrarFullScreen()
+            await delay(1000)
+            const respuesta = await Servicios.get({
+                url: '',
+                body: {},
+                headers: {
+                    accept: 'application/json',
+                }
+            })
+            imprimir('se obtuvo el estado: ', respuesta)
         } catch (e) {
             imprimir('Error al obtener estado', e)
+            Alerta({ mensaje: `${InterpreteMensajes(e)}`, variant: 'error' })
+        } finally {
+            ocultarFullScreen()
         }
     }
-
     useEffect(() => {
         obtenerEstado().then(() => { })
     }, [])

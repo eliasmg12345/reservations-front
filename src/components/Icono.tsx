@@ -1,6 +1,12 @@
-import { Icon, IconPropsColorOverrides, IconPropsSizeOverrides, SxProps, Theme } from "@mui/material";
+import Icon from '@mui/material/Icon'
+import { SxProps, Theme } from "@mui/material";
+import {
+    IconPropsColorOverrides,
+    IconPropsSizeOverrides,
+} from '@mui/material/Icon/Icon'
 import { CSSProperties, FC, PropsWithChildren } from "react";
 import { OverridableStringUnion } from "@mui/types";
+import 'material-icons/iconfont/outlined.css'
 
 interface Props {
     color?: OverridableStringUnion<
@@ -24,8 +30,8 @@ interface Props {
 }
 
 export const Icono: FC<PropsWithChildren<Props>> = ({
-    color,
-    fontSize,
+    color = 'primary',
+    fontSize = 'small',
     children,
     sx,
     style

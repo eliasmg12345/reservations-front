@@ -14,6 +14,7 @@ export type peticionFormato = {
     withCredentials?: boolean
 }
 
+export const estadosSinPermiso: number[] = [401]
 export const estadosCorrectos: number[] = [200, 201, 202, 204]
 class ServiciosClass {
     peticionHTTP = ({
@@ -92,7 +93,27 @@ class ServiciosClass {
             withCredentials,
         })
     }
+
+    async get({
+        url,
+        body = {},
+        headers = {},
+        params,
+        responseType,
+        withCredentials,
+    }: peticionFormato) {
+        return await this.peticion({
+            url,
+            method: 'get',
+            headers,
+            body,
+            params,
+            responseType,
+            withCredentials,
+        })
+    }
 }
+
 
 
 export const Servicios = new ServiciosClass()

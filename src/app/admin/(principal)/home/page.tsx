@@ -1,7 +1,10 @@
 'use client'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import { Icono } from "@/components/Icono";
 import { useAuth } from "@/context/AuthProvider";
 import { siteName, titleCase } from "@/utils/utilidades";
-import { Box, Card, CardActionArea, CardContent, Chip, Grid, Icon, Typography } from "@mui/material";
+import { Card, CardActionArea, CardContent, Chip, Grid } from "@mui/material";
 import { useRouter } from "next/navigation";
 
 export default function HomePage() {
@@ -52,7 +55,7 @@ export default function HomePage() {
                   {rolUsuario.modulos.map((modulo, index1) => (
                     <Grid
                       container
-                      direction="row"
+                      direction="column"
                       key={`rolUsuario-${index}-${index1}`}
                     >
                       <Grid>
@@ -70,6 +73,7 @@ export default function HomePage() {
                       >
                         {modulo.subModulo.map((subModulo, index2) => (
                           <Grid
+                            size={{ xs: 2, sm: 4, md: 4 }}
                             key={`$subModulo-${index}-${index1}-${index2}`}
                           >
                             <CardActionArea
@@ -87,9 +91,9 @@ export default function HomePage() {
                               >
                                 <CardContent>
                                   <Grid container direction="row">
-                                    <Icon color={'primary'}>
+                                    <Icono color={'primary'}>
                                       {subModulo.propiedades.icono}
-                                    </Icon>
+                                    </Icono>
                                     <Box height={'30px'} width={'10px'} />
                                     <Typography
                                       variant="caption"
@@ -117,6 +121,7 @@ export default function HomePage() {
             }
           </Grid>
         </Grid>
+        <Box height={'100px'} />
       </Box>
     </>
   )

@@ -1,4 +1,5 @@
 'use client'
+import { NavbarLogin } from "@/components/navbars/NavbarLogin";
 import { FullScreenLoading } from "@/components/progreso/FullScreenLoading";
 import { siteName } from "@/utils/utilidades";
 import { Box, Toolbar } from "@mui/material";
@@ -10,6 +11,7 @@ export default function LoginLayout({ children }: { children: ReactNode }) {
         <>
             <title>{`${siteName()}`}</title>
             <Box sx={{ display: 'flex' }}>
+                <NavbarLogin />
                 <Box component="main" sx={{ flexGrow: 1, p: 2 }}>
                     <Toolbar />
                     <Suspense fallback={<FullScreenLoading mensaje={'Cargando ...'} />}>

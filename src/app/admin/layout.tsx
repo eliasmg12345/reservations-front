@@ -1,6 +1,8 @@
 'use client'
+import { Sidebar } from "@/components/sidebar/Sidebar";
 import { useAuth } from "@/context/AuthProvider";
 import { SideBarProvider, useSidebar } from "@/context/SideBarProvider";
+import { imprimir } from "@/utils/imprimir";
 import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
 import { ReactNode, useEffect } from "react";
 
@@ -8,7 +10,7 @@ import { ReactNode, useEffect } from "react";
 const Contenido = ({ children }: { children: ReactNode }) => {
     const { sideMenuOpen } = useSidebar()
 
-    const { progresoLogin } = useAuth()
+    const { inicializarUsuario, progresoLogin, estaAutenticado } = useAuth()
 
     const theme = useTheme()
 
@@ -16,13 +18,22 @@ const Contenido = ({ children }: { children: ReactNode }) => {
     const xs = useMediaQuery(theme.breakpoints.only('xs'))
     const md = useMediaQuery(theme.breakpoints.only('md'))
 
-    useEffect(()=>{
+    useEffect(() => {
         if (progresoLogin) return
 
-        
-    },[progresoLogin])
+        if (!estaAutenticado)
+            inicializarUsuario()
+                .then(() => { })
+                .catch(imprimir)
+                .finally(() => {
+                    imprimir('verificación de login finaliada')
+                })
+
+    }, [progresoLogin])
+
     return (
         <>
+        {estaAutenticado && <Sidebar />}
             <Grid
                 container
                 spacing={0}
@@ -61,7 +72,7 @@ const Contenido = ({ children }: { children: ReactNode }) => {
                             }}
                         >
                             <Box height={'30px'} />
-                            {children}
+                            {estaAutenticado && children}
                         </div>
 
                     </Grid>

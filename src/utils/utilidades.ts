@@ -1,4 +1,5 @@
 import { Constantes } from "@/config/Constantes"
+import packageJson from '../../package.json'
 
 
 export const delay = (ms: number) => {
@@ -20,4 +21,8 @@ export const titleCase = (word: string) => {
             .split(' ')
             .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
             .join(' ')
+}
+
+export const versionNumber = () => {
+    return packageJson.version
 }

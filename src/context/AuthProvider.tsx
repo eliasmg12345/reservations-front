@@ -1,5 +1,5 @@
 'use client'
-import { LoginType, RoleType, UsuarioType } from "@/app/login/types/loginTypes"
+import { idRolType, LoginType, RoleType, UsuarioType } from "@/app/login/types/loginTypes"
 import { Constantes } from "@/config/Constantes"
 import { useSession } from "@/hooks/useSession"
 import { Servicios } from "@/services/Servicios"
@@ -17,6 +17,7 @@ interface ContextProps {
     estaAutenticado: boolean
     usuario: UsuarioType | null
     rolUsuario: RoleType | undefined
+    setRolUsuario: ({ idRol }: idRolType) => Promise<void>
     ingresar: ({ usuario, contrasena }: LoginType) => Promise<void>
     progresoLogin: boolean
 }
@@ -129,6 +130,34 @@ export const AuthProvider = ({ children }: AuthContextType) => {
         )
     }
 
+    const cambiarRol = async ({ idRol }: idRolType) => {
+        try {
+            imprimir(`Cambiando rol 👮‍♂️: ${idRol}`)
+            await actualizarRol({ idRol })
+            router.replace('/admin/home')
+        } catch (error) {
+            imprimir('error al cambiar de rol ', typeof error, error)
+            borrarSesionUsuario()
+            router.replace('/login')
+        }
+    }
+
+    const actualizarRol = async ({ idRol }: idRolType) => {
+        const respuestaUsuario = await sesionPeticion({
+            method: 'patch',
+            url: `${Constantes.baseUrl}/cambiarRol`,
+            body: {
+                idRol,
+            },
+        })
+
+        guardarCookie('token', respuestaUsuario.datos?.access_token)
+        imprimir(`Token ✅: ${respuestaUsuario.datos?.access_token}`)
+
+        setUser(respuestaUsuario.datos)
+        imprimir(`Rol definido en obtenerUsuarioRol : ${respuestaUsuario.datos.idRol}`)
+    }
+
     const rolUsuario = () => user?.roles.find((rol) => rol.idRol == user?.idRol)
 
     return (
@@ -138,6 +167,7 @@ export const AuthProvider = ({ children }: AuthContextType) => {
                 inicializarUsuario,
                 estaAutenticado: !!user && !loading,
                 usuario: user,
+                setRolUsuario: cambiarRol,
                 ingresar: login,
                 progresoLogin: loading,
                 rolUsuario: rolUsuario()

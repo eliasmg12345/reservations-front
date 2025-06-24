@@ -10,6 +10,10 @@ export interface PropiedadesType {
     orden: number
 }
 
+export interface idRolType {
+    idRol: string
+}
+
 export type SubModuloType = {
     id: string
     label: string

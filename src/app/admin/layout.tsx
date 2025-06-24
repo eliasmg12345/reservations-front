@@ -1,9 +1,10 @@
 'use client'
+import { NavbarUser } from "@/components/navbars/NavbarUser";
 import { Sidebar } from "@/components/sidebar/Sidebar";
 import { useAuth } from "@/context/AuthProvider";
 import { SideBarProvider, useSidebar } from "@/context/SideBarProvider";
 import { imprimir } from "@/utils/imprimir";
-import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Toolbar, useMediaQuery, useTheme } from "@mui/material";
 import { ReactNode, useEffect } from "react";
 
 
@@ -43,7 +44,7 @@ const Contenido = ({ children }: { children: ReactNode }) => {
                 justifyItems={'center'}
             >
                 <Box sx={{ display: 'flex' }}>
-
+                    <NavbarUser />
                 </Box>
                 <Box
                     component="main"
@@ -55,7 +56,7 @@ const Contenido = ({ children }: { children: ReactNode }) => {
                         transition: 'all 0.2s ease-out !important',
                     }}
                 >
-
+                    <Toolbar />
                     <Grid
                         container
                         spacing={0}

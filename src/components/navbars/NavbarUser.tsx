@@ -189,7 +189,16 @@ export const NavbarUser = () => {
                                 }}
                                 sx={{ cursor: 'pointer' }}
                             >
-                                to do image
+                                <Image
+                                    src={'/icono.png'}
+                                    alt={''}
+                                    width="30"
+                                    height="30"
+                                    style={{
+                                        maxWidth: '100%',
+                                        height: 'auto',
+                                    }}
+                                />
                                 <Box sx={{ px: 0.5 }} />
                                 <Typography
                                     color={'textPrimary'}

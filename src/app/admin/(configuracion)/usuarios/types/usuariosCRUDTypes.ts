@@ -31,3 +31,27 @@ export interface UsuarioCRUDType {
     usuarioRol: UsuarioRolCRUDType[]
     persona: PersonaCRUDType
 }
+
+export interface CrearPersonaType {
+    nombres: string
+    primerApellido: string
+    segundoApellido: string
+    nroDocumento: string
+    fechaNacimiento: string
+}
+
+export interface CrearEditarUsuarioType {
+    id?: string
+    usuario?: string
+    persona: CrearPersonaType
+    ciudadaniaDigital: boolean
+    roles: string[]
+    estado: string
+    correoElectronico: string
+}
+
+export interface RolType {
+    id: string
+    rol: string
+    nombre: string
+}

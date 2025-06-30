@@ -44,7 +44,6 @@ export const Sidebar = () => {
         )
         
     }
-    console.log({modulos});
 
     const navigateTo = (url: string) => {
         if (sm || xs || md) {

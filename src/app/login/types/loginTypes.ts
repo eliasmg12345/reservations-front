@@ -59,3 +59,9 @@ export interface UsuarioType {
     persona: PersonaType
     idRol: string
 }
+
+export interface PoliticaType {
+    sujeto: string
+    objeto: string
+    accion: string
+}

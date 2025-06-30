@@ -9,6 +9,9 @@ import { delay, encodeBase64 } from "@/utils/utilidades"
 import { useRouter } from "next/navigation"
 import { createContext, ReactNode, useContext, useState } from "react"
 import { useFullScreenLoading } from "./FullScreenLoadingProvider"
+import { CasbinTypes } from "@/types/casbinTypes"
+import { useCasbinEnforcer } from "@/hooks/useCasbinEnforcer"
+import { Enforcer } from "casbin"
 
 
 interface ContextProps {
@@ -20,6 +23,7 @@ interface ContextProps {
     setRolUsuario: ({ idRol }: idRolType) => Promise<void>
     ingresar: ({ usuario, contrasena }: LoginType) => Promise<void>
     progresoLogin: boolean
+    permisoUsuario: (routerName: string) => Promise<CasbinTypes>
 }
 
 const AuthContext = createContext<ContextProps>({} as ContextProps)
@@ -37,6 +41,8 @@ export const AuthProvider = ({ children }: AuthContextType) => {
     const router = useRouter()
 
     const { sesionPeticion, borrarCookiesSession } = useSession()
+    const { inicializarCasbin, interpretarPermiso, permisoSobreAccion } = useCasbinEnforcer()
+    const [enforcer, setEnforcer] = useState<Enforcer>()
 
     const inicializarUsuario = async () => {
         const token = leerCookie('token')
@@ -50,7 +56,8 @@ export const AuthProvider = ({ children }: AuthContextType) => {
             setLoading(true)
             mostrarFullScreen()
             await obtenerUsuarioRol()
-            //todo obtener permisos
+            await obtenerPermisos()
+
             await delay(1000)
         } catch (error: Error | any) {
             imprimir('Error durante la inicializarUsuario', typeof error, error)
@@ -72,8 +79,7 @@ export const AuthProvider = ({ children }: AuthContextType) => {
     const cargarUsuarioManual = async () => {
         try {
             await obtenerUsuarioRol()
-            //todo
-            //await obtenerPersmisos()
+            await obtenerPermisos()
 
             mostrarFullScreen()
             await delay(1000)
@@ -106,6 +112,8 @@ export const AuthProvider = ({ children }: AuthContextType) => {
             setUser(respuesta.datos)
             imprimir('Usuarios', respuesta.datos)
 
+            await obtenerPermisos()
+
             mostrarFullScreen()
             await delay(1000)
             router.replace('/admin/home')
@@ -134,6 +142,7 @@ export const AuthProvider = ({ children }: AuthContextType) => {
         try {
             imprimir(`Cambiando rol 👮‍♂️: ${idRol}`)
             await actualizarRol({ idRol })
+            await obtenerPermisos()
             router.replace('/admin/home')
         } catch (error) {
             imprimir('error al cambiar de rol ', typeof error, error)
@@ -158,6 +167,14 @@ export const AuthProvider = ({ children }: AuthContextType) => {
         imprimir(`Rol definido en obtenerUsuarioRol : ${respuestaUsuario.datos.idRol}`)
     }
 
+    const obtenerPermisos = async () => {
+        const respuestaPermisos = await sesionPeticion({
+            url: `${Constantes.baseUrl}/autorizacion/permisos`,
+        })
+
+        setEnforcer(await inicializarCasbin(respuestaPermisos.datos))
+    }
+
     const rolUsuario = () => user?.roles.find((rol) => rol.idRol == user?.idRol)
 
     return (
@@ -170,7 +187,9 @@ export const AuthProvider = ({ children }: AuthContextType) => {
                 setRolUsuario: cambiarRol,
                 ingresar: login,
                 progresoLogin: loading,
-                rolUsuario: rolUsuario()
+                rolUsuario: rolUsuario(),
+                permisoUsuario: (routerName: string) =>
+                    interpretarPermiso({ routerName, enforcer, rol: rolUsuario()?.rol }),
             }}
         >
             {children}

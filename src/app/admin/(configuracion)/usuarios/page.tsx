@@ -25,6 +25,7 @@ import CustomMensajeEstado from "@/components/estados/CustomMensajeEstado"
 import { CustomSwitch } from "@/components/botones/CustomSwitch"
 import { useAuth } from "@/context/AuthProvider"
 import { usePathname } from "next/navigation"
+import { Paginacion } from "@/components/datatable/Paginacion"
 
 export default function UsuariosPage() {
     const [usuariosData, setUsuariosData] = useState<UsuarioCRUDType[]>([])
@@ -275,6 +276,25 @@ export default function UsuariosPage() {
             setLoading(false)
         }
     }
+
+    const obtenerRolesPeticion = async () => {
+        try {
+            setLoading(true)
+            const respuesta = await sesionPeticion({
+                url: `${Constantes.baseUrl}/autorizacion/roles`,
+            })
+            setRolesData(respuesta.datos)
+            setErrorData(null)
+        } catch (e) {
+            imprimir('Error al obtener roles', e)
+            setErrorData(e)
+            Alerta({ mensaje: `${InterpreteMensajes(e)}`, variant: 'error' })
+            throw e
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const cambiarEstadoUsuarioPeticion = async (usuario: UsuarioCRUDType) => {
         try {
             const respuesta = await sesionPeticion({
@@ -339,6 +359,29 @@ export default function UsuariosPage() {
         imprimir('usuarios...')
         definirPermisos().finally()
     }, [])
+
+    useEffect(() => {
+        obtenerRolesPeticion()
+            .then(() => {
+                obtenerUsuariosPeticion()
+                    .catch(() => { })
+                    .finally()
+            })
+            .catch(() => { })
+            .finally(() => { })
+    }, [
+        pagina, limite,
+        JSON.stringify(filtroRoles),
+        JSON.stringify(ordenCriterios),
+        filtroUsuario,
+    ])
+
+    useEffect(() => {
+        if (!mostrarFiltroUsuarios) {
+            setFiltroUsuario('')
+            setFiltroRoles([])
+        }
+    }, [mostrarFiltroUsuarios])
     return (
         <>
             <title>{`Usuarios - ${siteName()}`}</title>
@@ -395,7 +438,15 @@ export default function UsuariosPage() {
                         />
                     )
                 }
-
+                paginacion={
+                    <Paginacion
+                        pagina={pagina}
+                        limite={limite}
+                        total={total}
+                        cambioPagina={setPagina}
+                        cambioLimite={setLimite}
+                    />
+                }
             />
         </>
     )

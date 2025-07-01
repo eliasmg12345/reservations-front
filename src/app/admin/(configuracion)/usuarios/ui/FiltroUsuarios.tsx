@@ -3,6 +3,8 @@ import { RolType } from "../types/usuariosCRUDTypes"
 import { Box, Grid } from "@mui/material"
 import { FormInputText } from "@/components/form/FormInputText"
 import { FormInputDropdownMultiple } from "@/components/form/FormInputTextDropdownMultiple"
+import { useEffect } from "react"
+import { useDebouncedCallback } from "use-debounce"
 
 
 export interface FiltroType {
@@ -30,6 +32,26 @@ export const FiltroUsuarios = ({
             roles: filtroRoles
         }
     })
+
+    const filtroUsuarioWatch: string = watch('usuario')
+    const filtroRolesWatch: string[] = watch('roles')
+
+    const debounced = useDebouncedCallback(
+        (filtros: FiltroType) => {
+            accionCorrecta(filtros)
+        },
+        1000
+    )
+    const actualizacionFiltros = (filtros: FiltroType) => {
+        debounced(filtros)
+    }
+
+    useEffect(() => {
+        actualizacionFiltros({
+            usuario: filtroUsuarioWatch,
+            roles: filtroRolesWatch,
+        })
+    }, [filtroUsuarioWatch, filtroRolesWatch])
 
     return (
         <Box sx={{ pl: 1, pr: 1, pt: 1 }}>

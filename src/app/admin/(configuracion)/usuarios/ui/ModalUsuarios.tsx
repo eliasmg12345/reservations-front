@@ -8,8 +8,10 @@ import { useSession } from "@/hooks/useSession"
 import { InterpreteMensajes } from "@/utils/interpreteMensajes"
 import { Constantes } from "@/config/Constantes"
 import { formatoFecha } from "@/utils/fechas"
-import { Box, DialogContent, Grid, Typography } from "@mui/material"
+import { Box, Button, DialogActions, DialogContent, Grid, Typography } from "@mui/material"
 import { FormInputText } from "@/components/form/FormInputText"
+import { FormInputDate } from "@/components/form/FormInputDate"
+import ProgresoLineal from "@/components/progreso/ProgresoLineal"
 
 
 export interface ModalUsuarioType {
@@ -108,10 +110,78 @@ export const VistaModalUsuario = ({
                                 rules={{ required: 'Este campo es requerido' }}
                             />
                         </Grid>
-                        //Todo inputs
+                        <Grid size={{ xs: 12, sm: 12, md: 4 }}>
+                            <FormInputText
+                                id={'nombre'}
+                                control={control}
+                                name="persona.nombres"
+                                label="Nombre"
+                                disabled={loadingModal}
+                                rules={{ required: 'Este campo es requerido' }}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 12, md: 4 }}>
+                            <FormInputText
+                                id={'primerApellido'}
+                                control={control}
+                                name="persona.primerApellido"
+                                label="Primer Apellido"
+                                disabled={loadingModal}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 12, md: 4 }}>
+                            <FormInputText
+                                id={'segundoApellido'}
+                                control={control}
+                                name="persona.segundoApellido"
+                                label="Segundo Apellido"
+                                disabled={loadingModal}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 12, md: 4 }}>
+                            <FormInputDate
+                                id={'fechaNacimiento'}
+                                control={control}
+                                name="persona.fechaNacimiento"
+                                label="Fecha de nacimiento"
+                                disabled={loadingModal}
+                                rules={{ required: 'Este campo es requerido' }}
+                            />
+                        </Grid>
+
+                        //Todo datos de usuario
                     </Grid>
+                    <Box height={'20px'} />
+                    <ProgresoLineal mostrar={loadingModal} />
                 </Grid>
             </DialogContent>
+            <DialogActions
+                sx={{
+                    my: 1,
+                    mx: 2,
+                    justifyContent: {
+                        lg: 'flex-end',
+                        md: 'flex-end',
+                        xs: 'center',
+                        sm: 'center',
+                    }
+                }}
+            >
+                <Button
+                    variant={'outlined'}
+                    disabled={loadingModal}
+                    onClick={accionCancelar}
+                >
+                    Cancelar
+                </Button>
+                <Button
+                    variant={'contained'}
+                    disabled={loadingModal}
+                    type={'submit'}
+                >
+                    Guardar
+                </Button>
+            </DialogActions>
         </form>
     )
 }

@@ -1,7 +1,7 @@
 import { FormHelperText, IconButton, InputLabel, TextField, Typography, TypographyProps } from "@mui/material"
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { Dayjs } from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 import "dayjs/locale/es-mx"
 import { Control, Controller, FieldPath, FieldValues, PathValue, RegisterOptions } from "react-hook-form"
 import { DatePicker } from "@mui/x-date-pickers"
@@ -71,8 +71,7 @@ export const FormInputDate = <
                     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es-mx">
                         <DatePicker
                             onChange={field.onChange}
-                            value={field.value}
-                            ref={field.ref}
+                            value={field.value ? dayjs(field.value) : null}
                             format={format}
                             minDate={minDate}
                             maxDate={maxDate}
@@ -108,14 +107,24 @@ export const FormInputDate = <
                     </LocalizationProvider>
                 )}
                 rules={{
+
                     ...{
                         validate: (val?: string) => {
                             if (val && !validarFechaFormato(val, format)) {
-                                return 'La fecha no es valida'
+                                return 'La fecha no es válida'
                             }
                         },
                     },
                     ...rules,
+                    
+                    // validate: (val) => {
+                    //     const date = typeof val === 'string' ? dayjs(val) : val;
+                    //     if (date && !date.isValid()) {
+                    //         return 'La fecha no es válida';
+                    //     }
+                    //     return true;
+                    // },
+                    // ...rules,
                 }}
                 defaultValue={null as PathValue<TFieldValues, TName>}
             />

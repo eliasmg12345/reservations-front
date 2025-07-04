@@ -12,6 +12,8 @@ import { Box, Button, DialogActions, DialogContent, Grid, Typography } from "@mu
 import { FormInputText } from "@/components/form/FormInputText"
 import { FormInputDate } from "@/components/form/FormInputDate"
 import ProgresoLineal from "@/components/progreso/ProgresoLineal"
+import { FormInputDropdownMultiple } from "@/components/form/FormInputTextDropdownMultiple"
+import { isValidEmail } from "@/utils/validations"
 
 
 export interface ModalUsuarioType {
@@ -56,6 +58,7 @@ export const VistaModalUsuario = ({
         usuario: CrearEditarUsuarioType
     ) => {
         try {
+            console.log({ peticionUsuario: usuario });
             setLoadingModal(true)
             await delay(1000)
             const respuesta = await sesionPeticion({
@@ -148,8 +151,45 @@ export const VistaModalUsuario = ({
                                 rules={{ required: 'Este campo es requerido' }}
                             />
                         </Grid>
-
-                        //Todo datos de usuario
+                    </Grid>
+                    <Grid>
+                        <Box height={'20px'} />
+                        <Typography sx={{ fontWeight: '600' }} variant={'subtitle2'}>
+                            Datos de Usuario
+                        </Typography>
+                        <Box height={'10px'} />
+                        <Grid container direction="row" spacing={{ xs: 2, sm: 1, md: 2 }}>
+                            <Grid size={{ xs: 12, sm: 12, md: 12 }}>
+                                <FormInputDropdownMultiple
+                                    id={'roles'}
+                                    name="roles"
+                                    control={control}
+                                    label="Roles"
+                                    disabled={loadingModal}
+                                    options={roles.map((rol) => ({
+                                        key: rol.id,
+                                        value: rol.id,
+                                        label: rol.nombre
+                                    }))}
+                                    rules={{ required: 'Este campo es requerido' }}
+                                />
+                            </Grid>
+                            <Grid size={{ xs: 12, sm: 12, md: 12 }}>
+                                <FormInputText
+                                    id={'correoElectronico'}
+                                    control={control}
+                                    name="correoElectronico"
+                                    label="Correo Electronico"
+                                    disabled={loadingModal}
+                                    rules={{
+                                        required: 'Este campo es requerido',
+                                        validate: (value) => {
+                                            if (!isValidEmail(value)) return 'No es un correo válido'
+                                        }
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
                     </Grid>
                     <Box height={'20px'} />
                     <ProgresoLineal mostrar={loadingModal} />

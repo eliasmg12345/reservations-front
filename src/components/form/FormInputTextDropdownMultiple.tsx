@@ -120,7 +120,7 @@ export const FormInputDropdownMultiple = <
                         {!!error && <FormHelperText error>{error?.message}</FormHelperText>}
                     </>
                 )}
-                defaultValue={'' as PathValue<TFieldValues, TName>}
+                defaultValue={[] as PathValue<TFieldValues, TName>}
                 rules={rules}
             />
         </div>

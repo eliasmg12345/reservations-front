@@ -6,7 +6,7 @@ import { delay, siteName, titleCase } from "@/utils/utilidades"
 import { ReactNode, useEffect, useState } from "react"
 import { FiltroRol } from "./ui/FiltroRol"
 import { useAlerts } from "@/hooks/useAlerts"
-import { Button, Stack, Typography } from "@mui/material"
+import { Button, Stack, Typography, useMediaQuery, useTheme } from "@mui/material"
 import { RolCRUDType } from "./types/rolCRUDType"
 import CustomMensajeEstado from "@/components/estados/CustomMensajeEstado"
 import { CasbinTypes } from "@/types/casbinTypes"
@@ -22,6 +22,9 @@ import { usePathname } from "next/navigation"
 import { CustomDialog } from "@/components/modales/CustomDialog"
 import { VistaModalRol } from "./ui/ModalRol"
 import { AlertDialog } from "@/components/modales/AlertDialog"
+import { CustomToggleButton } from "@/components/botones/CustomToggleButton"
+import { BotonOrdenar } from "@/components/botones/BotonOrdenar"
+import { IconoBoton } from "@/components/botones/IconoBoton"
 
 export default function RolesPage() {
     const [rolesData, setRolesData] = useState<RolCRUDType[]>([])
@@ -57,6 +60,9 @@ export default function RolesPage() {
         update: false,
         delete: false,
     })
+    const theme = useTheme()
+    const xs = useMediaQuery(theme.breakpoints.only('xs'))
+
 
     const cancelarAlertaEstadoRol = async () => {
         setMostrarAlertaEstadoRol(false)
@@ -147,6 +153,48 @@ export default function RolesPage() {
         ]
     )
 
+    const acciones: Array<ReactNode> = [
+        <CustomToggleButton
+            id={'accionFiltrarRolToffle'}
+            key={'accionFiltrarRolToffle'}
+            icono="search"
+            seleccionado={mostrarFiltroRol}
+            cambiar={setMostrarFiltroRol}
+        />,
+        xs && (
+            <BotonOrdenar
+                id={'ordenarRoles'}
+                key={'ordenarRoles'}
+                label={'Ordenar Roles'}
+                criterios={ordenCriterios}
+                cambioCriterios={setOrdenCriterios}
+            />
+        ),
+        <IconoTooltip
+            id={'actualizar'}
+            titulo={'Actualizar'}
+            key={'accionActualizarRol'}
+            accion={async () => {
+                await obtenerRolesPeticion()
+            }}
+            icono={'refresh'}
+            name={'Actualizar lista de roles'}
+        />,
+        permisos.create && (
+            <IconoBoton
+                id={'agregarRol'}
+                key={'agregarRol'}
+                texto={'Agregar'}
+                variante={xs ? 'icono' : 'boton'}
+                icono={'add_circle_outline'}
+                descripcion={'Agregar rol'}
+                accion={() => {
+                    agregarRolModal()
+                }}
+            />
+        )
+    ]
+
     const cambiarEstadoRolPeticion = async (rol: RolCRUDType) => {
         try {
             setLoading(true)
@@ -195,6 +243,11 @@ export default function RolesPage() {
         } finally {
             setLoading(false)
         }
+    }
+
+    const agregarRolModal = () => {
+        setRolEdicion(undefined)
+        setModalRol(true)
     }
 
     const editarRolModal = (Rol: RolCRUDType) => {
@@ -276,7 +329,7 @@ export default function RolesPage() {
                 titulo={'Roles'}
                 error={!!errorRolData}
                 cargando={loading}
-                acciones={[]}
+                acciones={acciones}
                 columnas={ordenCriterios}
                 cambioOrdenCriterios={setOrdenCriterios}
                 paginacion={paginacion}

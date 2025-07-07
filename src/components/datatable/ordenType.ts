@@ -6,5 +6,5 @@ export interface CriterioOrdenType {
     campo: string
     nombre: string
     orden?: OrdenEnum
-    ordernar?: boolean
+    ordenar?: boolean
 }

@@ -70,12 +70,12 @@ export default function UsuariosPage() {
     const [ordenCriterios, setOrdenCriterios] = useState<
         Array<CriterioOrdenType>
     >([
-        { campo: 'nroDocumento', nombre: 'Nro. Documento', ordernar: true },
-        { campo: 'nombres', nombre: 'Nombres', ordernar: true },
-        { campo: 'usuario', nombre: 'Usuario', ordernar: true },
+        { campo: 'nroDocumento', nombre: 'Nro. Documento', ordenar: true },
+        { campo: 'nombres', nombre: 'Nombres', ordenar: true },
+        { campo: 'usuario', nombre: 'Usuario', ordenar: true },
         { campo: 'tipo', nombre: 'Tipo' },
-        { campo: 'rol', nombre: 'Roles', ordernar: true },
-        { campo: 'estado', nombre: 'Estado', ordernar: true },
+        { campo: 'rol', nombre: 'Roles', ordenar: true },
+        { campo: 'estado', nombre: 'Estado', ordenar: true },
         { campo: 'acciones', nombre: 'Acciones' },
     ])
 

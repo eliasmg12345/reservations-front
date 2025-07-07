@@ -284,7 +284,7 @@ export const CustomDesktopDataTable = ({
                                                             pl: { md: 2, xl: 2 }
                                                         }}
                                                     >
-                                                        {columna.ordernar ? (
+                                                        {columna.ordenar ? (
                                                             <Button
                                                                 disabled={cargando}
                                                                 style={{

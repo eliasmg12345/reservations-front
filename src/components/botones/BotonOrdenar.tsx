@@ -75,7 +75,7 @@ export const BotonOrdenar = ({
                         color="secondary"
                         variant="dot"
                         badgeContent={
-                            criterios.filter((value) => value.ordernar && value.orden).length
+                            criterios.filter((value) => value.ordenar && value.orden).length
                         }
                     >
                         <Icono color={desactivado ? 'disabled' : color}>{icono}</Icono>
@@ -97,7 +97,7 @@ export const BotonOrdenar = ({
                     autoFocus={false}
                 >
                     {criterios.map((accion, index) => {
-                        return accion.ordernar ? (
+                        return accion.ordenar ? (
                             <MenuItem
                                 sx={{ b: 2 }}
                                 id={`${index}-id-orden`}

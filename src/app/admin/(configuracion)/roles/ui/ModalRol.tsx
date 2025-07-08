@@ -35,11 +35,11 @@ export const VistaModalRol = ({
         },
     })
 
-    const guardarActualizarUsuario = async (data: RolCRUDType) => {
-        await guardarActualizarUsuarioPeticion(data)
+    const guardarActualizarRol = async (data: RolCRUDType) => {
+        await guardarActualizarRolesPeticion(data)
     }
 
-    const guardarActualizarUsuarioPeticion = async (
+    const guardarActualizarRolesPeticion = async (
         Rol: RolCRUDType
     ) => {
         try {
@@ -65,7 +65,7 @@ export const VistaModalRol = ({
     }
 
     return (
-        <form onSubmit={handleSubmit(guardarActualizarUsuario)}>
+        <form onSubmit={handleSubmit(guardarActualizarRol)}>
             <DialogContent dividers>
                 <Grid container direction={'column'} justifyContent="space-between">
                     <Grid container direction="row" spacing={{ xs: 2, sm: 1, md: 2 }}>

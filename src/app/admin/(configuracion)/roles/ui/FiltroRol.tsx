@@ -9,7 +9,7 @@ export interface FiltroType {
     rol: string
 }
 
-export interface FiltroModalUsuarioType {
+export interface FiltroModalRolType {
     filtroRol: string
     accionCorrecta: (filtros: FiltroType) => void
     accionCerrar: () => void
@@ -18,7 +18,7 @@ export interface FiltroModalUsuarioType {
 export const FiltroRol = ({
     filtroRol,
     accionCorrecta
-}: FiltroModalUsuarioType) => {
+}: FiltroModalRolType) => {
     const { control, watch } = useForm<FiltroType>({
         defaultValues: {
             rol: filtroRol

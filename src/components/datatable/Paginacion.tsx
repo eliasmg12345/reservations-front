@@ -96,7 +96,7 @@ export const Paginacion: FC<Props> = ({
                         alignItems: 'center',
                     }}
                 >
-                    <Typography>
+                    <Typography color={'text.secondary'} variant={'body2'}>
                         {`${Math.max((pagina - 1) * limite, 1)}-${Math.min(
                             pagina * limite,
                             total
